@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário de Recomendação de Produtos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .question input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .product-recommendation, .oil-recommendation {
+            margin-top: 10px;
+        }
+        .recommendations {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Questionário de Recomendação de Produtos</h1>
+        <form id="questionnaire">
+            <div class="question">
+                <label for="scalp-symptoms">Sintomas do Couro Cabeludo:</label>
+                <input type="checkbox" id="itching" name="scalp-symptoms" value="Coceira">
+                <label for="itching">Coceira</label>
+                <input type="checkbox" id="flaking" name="scalp-symptoms" value="Descamação">
+                <label for="flaking">Descamação</label>
+                <input type="checkbox" id="oiliness" name="scalp-symptoms" value="Oleosidade">
+                <label for="oiliness">Oleosidade</label>
+                <input type="checkbox" id="dryness" name="scalp-symptoms" value="Ressecamento">
+                <label for="dryness">Ressecamento</label>
+                <input type="checkbox" id="wounds" name="scalp-symptoms" value="Feridas">
+                <label for="wounds">Feridas</label>
+            </div>
+
+            <div class="question">
+                <label for="hair-symptoms">Sintomas dos Fios:</label>
+                <input type="checkbox" id="breakage" name="hair-symptoms" value="Quebra">
+                <label for="breakage">Quebra</label>
+                <input type="checkbox" id="split-ends" name="hair-symptoms" value="Pontas Duplas">
+                <label for="split-ends">Pontas Duplas</label>
+                <input type="checkbox" id="dullness" name="hair-symptoms" value="Opacidade">
+                <label for="dullness">Opacidade</label>
+                <input type="checkbox" id="frizz" name="hair-symptoms" value="Frizz">
+                <label for="frizz">Frizz</label>
+                <input type="checkbox" id="shedding" name="hair-symptoms" value="Eflúvio">
+                <label for="shedding">Eflúvio (queda)</label>
+            </div>
+
+            <div class="question">
+                <label for="hair-type">Tipos de Fios (química):</label>
+                <input type="checkbox" id="dye" name="hair-type" value="Tintura">
+                <label for="dye">Tintura</label>
+                <input type="checkbox" id="straightening" name="hair-type" value="Alisamento">
+                <label for="straightening">Alisamento</label>
+                <input type="checkbox" id="other-chemicals" name="hair-type" value="Outras Químicas">
+                <label for="other-chemicals">Outras Químicas</label>
+            </div>
+
+            <button type="button" onclick="generateRecommendations()">Gerar Recomendações</button>
+        </form>
+
+        <div id="recommendations" class="recommendations">
+            <div class="product-recommendation">
+                <h2>Recomendações de Produtos:</h2>
+                <ul id="product-list"></ul>
+            </div>
+            <div class="oil-recommendation">
+                <h2>Recomendações de Óleos:</h2>
+                <ul id="oil-list"></ul>
+            </div>
+            <div class="suggestions">
+                <h2>Sugestões Adicionais:</h2>
+                <ul id="additional-suggestions"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateRecommendations() {
+            const scalpSymptoms = Array.from(document.querySelectorAll('input[name="scalp-symptoms"]:checked')).map(el => el.value);
+            const hairSymptoms = Array.from(document.querySelectorAll('input[name="hair-symptoms"]:checked')).map(el => el.value);
+            const hairType = Array.from(document.querySelectorAll('input[name="hair-type"]:checked')).map(el => el.value);
+
+            const products = {
+                "Coceira": [
+                    "Fito Capillus + Tea Tree + Straight - Propriedades anti-inflamatórias e antimicrobianas que ajudam a aliviar a coceira e controlar a oleosidade.",
+                    "Fito Capillus + Dry Confort - Alivia a sensibilidade e a coceira, enquanto controla a oleosidade e proporciona conforto.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e acalma o couro cabeludo, ajudando na recuperação das pequenas feridas."
+                ],
+                "Descamação": [
+                    "Fito Capillus + Tea Tree + Straight - Ajuda a controlar a descamação com suas propriedades anti-inflamatórias e antimicrobianas.",
+                    "Fito Capillus + Dry Confort - Ajuda a aliviar a descamação e proporciona conforto ao couro cabeludo.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e acalma o couro cabeludo, ajudando a controlar a descamação."
+                ],
+                "Oleosidade": [
+                    "Fito Capillus + Tea Tree + Straight - Controla a oleosidade com suas propriedades antimicrobianas e anti-inflamatórias.",
+                    "Fito Capillus + Dry Confort - Controla a oleosidade enquanto alivia a sensibilidade.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e ajuda a regular a produção de óleo no couro cabeludo."
+                ],
+                "Ressecamento": [
+                    "Fito Capillus + Flowers + Milk - Hidrata profundamente e acalma o couro cabeludo ressecado.",
+                    "Fito Capillus + Dry Confort - Ajuda a reter a umidade e aliviar a sensação de ressecamento.",
+                    "Fito Capillus + Tea Tree + Straight - Proporciona hidratação e alívio para o couro cabeludo seco."
+                ],
+                "Quebra": [
+                    "Fito Capillus + Tea Tree + Straight - Ajuda a fortalecer os fios e prevenir a quebra.",
+                    "Fito Capillus + Dry Confort - Hidrata e fortalece os fios, reduzindo a quebra.",
+                    "Fito Capillus + Flowers + Milk - Fortalece os fios e ajuda a prevenir a quebra com hidratação intensa."
+                ],
+                "Pontas Duplas": [
+                    "Fito Capillus + Tea Tree + Straight - Ajuda a prevenir e tratar pontas duplas com suas propriedades fortalecedoras.",
+                    "Fito Capillus + Dry Confort - Hidrata e previne as pontas duplas ao fortalecer os fios.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e melhora a textura dos fios, ajudando a prevenir pontas duplas."
+                ],
+                "Opacidade": [
+                    "Fito Capillus + Tea Tree + Straight - Melhora a luminosidade e a saúde dos fios, reduzindo a opacidade.",
+                    "Fito Capillus + Dry Confort - Hidrata os fios e melhora seu brilho e aparência.",
+                    "Fito Capillus + Flowers + Milk - Proporciona brilho e vitalidade aos fios opacos."
+                ],
+                "Frizz": [
+                    "Fito Capillus + Tea Tree + Straight - Controla o frizz e proporciona uma textura mais suave.",
+                    "Fito Capillus + Dry Confort - Ajuda a suavizar o frizz e proporciona um efeito anti-frizz.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e reduz o frizz, deixando os fios mais suaves."
+                ],
+                "Eflúvio": [
+                    "Fito Capillus + Tea Tree + Straight - Auxilia na saúde do couro cabeludo e reduz o eflúvio com suas propriedades calmantes.",
+                    "Fito Capillus + Dry Confort - Ajuda a fortalecer os fios e reduzir a queda associada ao eflúvio.",
+                    "Fito Capillus + Flowers + Milk - Fortalece e hidrata os fios, ajudando a combater o eflúvio."
+                ],
+                "Tintura": [
+                    "Fito Capillus + Flowers + Milk - Hidrata e mantém a saúde dos fios tingidos.",
+                    "Fito Capillus + Dry Confort - Proporciona conforto e hidratação para cabelos tingidos.",
+                    "Fito Capillus + Tea Tree + Straight - Ajuda a manter a saúde do couro cabeludo e a cor dos fios tingidos."
+                ],
+                "Alisamento": [
+                    "BBtox - Tratamento específico para cabelos alisados, ajuda a manter a saúde e o aspecto dos fios alisados.",
+                    "BBtox - Tratamento específico para cabelos alisados, ajuda a manter a saúde e o aspecto dos fios alisados.",
+                    "BBtox - Tratamento específico para cabelos alisados, ajuda a manter a saúde e o aspecto dos fios alisados."
+                ],
+                "Outras Químicas": [
+                    "Fito Capillus + Tea Tree + Straight - Ajuda a manter a saúde dos fios tratados com outras químicas.",
+                    "Fito Capillus + Dry Confort - Proporciona conforto e hidratação para cabelos tratados com outras químicas.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e ajuda a restaurar os fios tratados com outras químicas."
+                ],
+                "Feridas": [
+                    "Fito Capillus + Tea Tree + Straight - Alivia a coceira e a inflamação, ajudando na recuperação das feridas.",
+                    "Fito Capillus + Dry Confort - Proporciona alívio e ajuda a cicatrizar as feridas do couro cabeludo.",
+                    "Fito Capillus + Flowers + Milk - Hidrata e acalma o couro cabeludo, auxiliando na recuperação das feridas."
+                ]
+            };
+
+            const oils = {
+                "Coceira": [
+                    "Óleo de Tea Tree - Antifúngico e antibacteriano, ajuda a combater infecções e reduzir a inflamação.",
+                    "Óleo de Jojoba - Equilibra a produção de óleo e reduz a irritação.",
+                    "Óleo de Camomila - Calma e reduz a inflamação, proporcionando alívio para a coceira."
+                ],
+                "Descamação": [
+                    "Óleo de Tea Tree - Combate a inflamação e ajuda a controlar a descamação.",
+                    "Óleo de Jojoba - Hidrata e ajuda a reduzir a descamação.",
+                    "Óleo de Camomila - Acalma e reduz a inflamação do couro cabeludo."
+                ],
+                "Oleosidade": [
+                    "Óleo de Tea Tree - Controla a oleosidade com suas propriedades antimicrobianas.",
+                    "Óleo de Jojoba - Equilibra a produção de óleo no couro cabeludo.",
+                    "Óleo de Camomila - Reduz a inflamação e a produção de óleo."
+                ],
+                "Ressecamento": [
+                    "Óleo de Jojoba - Hidrata e suaviza o couro cabeludo ressecado.",
+                    "Óleo de Camomila - Proporciona hidratação e alívio para o ressecamento.",
+                    "Óleo de Tea Tree - Ajuda a manter o equilíbrio do couro cabeludo e hidratar."
+                ],
+                "Quebra": [
+                    "Óleo de Jojoba - Fortalece os fios e ajuda a prevenir a quebra.",
+                    "Óleo de Camomila - Fortalece e melhora a saúde dos fios.",
+                    "Óleo de Tea Tree - Melhora a saúde do couro cabeludo e dos fios."
+                ],
+                "Pontas Duplas": [
+                    "Óleo de Jojoba - Hidrata e previne pontas duplas.",
+                    "Óleo de Camomila - Melhora a saúde dos fios e reduz pontas duplas.",
+                    "Óleo de Tea Tree - Proporciona alívio e melhora a textura dos fios."
+                ],
+                "Opacidade": [
+                    "Óleo de Jojoba - Proporciona brilho e vitalidade aos fios opacos.",
+                    "Óleo de Camomila - Melhora o brilho e a aparência dos fios.",
+                    "Óleo de Tea Tree - Ajuda a revitalizar e melhorar a luminosidade dos fios."
+                ],
+                "Frizz": [
+                    "Óleo de Jojoba - Suaviza o frizz e hidrata os fios.",
+                    "Óleo de Camomila - Reduz o frizz e melhora a textura dos fios.",
+                    "Óleo de Tea Tree - Ajuda a controlar o frizz e a melhorar a saúde dos fios."
+                ],
+                "Eflúvio": [
+                    "Óleo de Jojoba - Fortalece e ajuda a reduzir o eflúvio.",
+                    "Óleo de Camomila - Ajuda a fortalecer os fios e reduzir o eflúvio.",
+                    "Óleo de Tea Tree - Melhora a saúde do couro cabeludo e reduz o eflúvio."
+                ],
+                "Tintura": [
+                    "Óleo de Jojoba - Hidrata e mantém a saúde dos fios tingidos.",
+                    "Óleo de Camomila - Proporciona brilho e vitalidade aos fios tingidos.",
+                    "Óleo de Tea Tree - Ajuda a manter a saúde do couro cabeludo e a cor dos fios tingidos."
+                ],
+                "Alisamento": [
+                    "Óleo de Jojoba - Hidrata e mantém a saúde dos fios alisados.",
+                    "Óleo de Camomila - Ajuda a manter a saúde e a suavidade dos fios alisados.",
+                    "Óleo de Tea Tree - Proporciona alívio e mantém a saúde do couro cabeludo alisado."
+                ],
+                "Outras Químicas": [
+                    "Óleo de Jojoba - Hidrata e equilibra o couro cabeludo tratado com outras químicas.",
+                    "Óleo de Camomila - Ajuda a restaurar a saúde dos fios tratados com outras químicas.",
+                    "Óleo de Tea Tree - Melhora a saúde geral dos fios e do couro cabeludo tratados com outras químicas."
+                ],
+                "Feridas": [
+                    "Óleo de Tea Tree - Antifúngico e antibacteriano, ajuda a combater infecções e reduz a inflamação.",
+                    "Óleo de Jojoba - Equilibra a produção de óleo e reduz a irritação.",
+                    "Óleo de Camomila - Acalma e reduz a inflamação, proporcionando alívio para a coceira e feridas."
+                ]
+            };
+
+            const additionalSuggestions = {
+                "Feridas": [
+                    "Evite o uso de argilas até que as feridas estejam curadas. As argilas podem irritar ainda mais o couro cabeludo.",
+                    "Escolha produtos suaves e calmantes para não agravar a condição do couro cabeludo."
+                ]
+            };
+
+            const productList = document.getElementById('product-list');
+            const oilList = document.getElementById('oil-list');
+            const additionalSuggestionsList = document.getElementById('additional-suggestions');
+
+            productList.innerHTML = '';
+            oilList.innerHTML = '';
+            additionalSuggestionsList.innerHTML = '';
+
+            function addRecommendations(items, listElement) {
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    listElement.appendChild(li);
+                });
+            }
+
+            function addAdditionalSuggestions(items) {
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    additionalSuggestionsList.appendChild(li);
+                });
+            }
+
+            // Adiciona recomendações de produtos
+            scalpSymptoms.forEach(symptom => {
+                if (products[symptom]) {
+                    addRecommendations(products[symptom], productList);
+                }
+            });
+
+            hairSymptoms.forEach(symptom => {
+                if (products[symptom]) {
+                    addRecommendations(products[symptom], productList);
+                }
+            });
+
+            hairType.forEach(type => {
+                if (products[type]) {
+                    addRecommendations(products[type], productList);
+                }
+            });
+
+            if (scalpSymptoms.includes("Feridas")) {
+                addRecommendations(products["Feridas"], productList);
+                if (additionalSuggestions["Feridas"]) {
+                    addAdditionalSuggestions(additionalSuggestions["Feridas"]);
+                }
+            }
+
+            // Adiciona recomendações de óleos
+            scalpSymptoms.forEach(symptom => {
+                if (oils[symptom]) {
+                    addRecommendations(oils[symptom], oilList);
+                }
+            });
+
+            hairSymptoms.forEach(symptom => {
+                if (oils[symptom]) {
+                    addRecommendations(oils[symptom], oilList);
+                }
+            });
+
+            hairType.forEach(type => {
+                if (oils[type]) {
+                    addRecommendations(oils[type], oilList);
+                }
+            });
+
+            if (scalpSymptoms.includes("Feridas")) {
+                addRecommendations(oils["Feridas"], oilList);
+            }
+        }
+    </script>
+</body>
+</html>
